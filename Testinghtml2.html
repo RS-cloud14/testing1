@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Money Management for Kids</title>
+  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/jeromeetienne/ar.js/1.7.2/aframe/build/aframe-ar.min.js"></script>
+  <style>
+    body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f0f4f8; margin: 0; padding: 0; }
+    #app { max-width: 900px; margin: 0 auto; padding: 20px; }
+    h1 { font-size: 2.5em; color: #343a40; }
+    h2 { font-size: 1.8em; color: #007BFF; }
+    p { font-size: 1.1em; color: #495057; }
+    .btn { padding: 10px 20px; background-color: #28a745; color: white; border: none; cursor: pointer; border-radius: 5px; margin: 10px; font-size: 1.1em; }
+    .btn:hover { background-color: #218838; }
+    .container { background: white; padding: 20px; border-radius: 10px; margin-top: 20px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); }
+    #arScene { display: none; }
+    #arFeedback { margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>Kids Money Management Edutainment</h1>
+
+    <!-- Daily Saving Tips -->
+    <div id="tips">
+      <h2>Today's Saving Tip</h2>
+      <p id="dailyTip">"Always save a little from your pocket money to buy something special in the future!"</p>
+    </div>
+
+    <!-- AR Experience -->
+    <div class="container">
+      <h2>AR Interactive Experience</h2>
+      <p>Click the button below to interact with a virtual piggy bank in AR!</p>
+      <button class="btn" id="arBtn">Start AR Piggy Bank</button>
+
+      <!-- AR Scene -->
+      <a-scene embedded arjs="sourceType: webcam;" id="arScene">
+        <a-marker preset="hiro">
+          <a-box id="piggyBankModel" position="0 0.5 0" rotation="0 45 0" color="pink" scale="0.5 0.5 0.5"></a-box>
+        </a-marker>
+        <a-entity camera></a-entity>
+      </a-scene>
+
+      <p id="arFeedback"></p>
+    </div>
+
+    <!-- AI Assistant -->
+    <div class="container">
+      <h2>AI Assistant</h2>
+      <p>Ask me anything about money! Click the button to ask via voice or type your question below.</p>
+      <button class="btn" id="askAiBtn">Ask AI Assistant</button>
+      <div class="ai-input">
+        <input type="text" id="questionInput" placeholder="Type your question here...">
+        <button class="btn" id="askTextAiBtn">Ask AI</button>
+      </div>
+      <p id="aiResponse"></p>
+    </div>
+
+    <!-- Budget Calculator -->
+    <div class="container">
+      <h2>Budget Calculator</h2>
+      <p>Use the calculator to manage your money by entering your pocket money and expenses.</p>
+      <div class="input-group">
+        <label>Pocket Money: </label>
+        <input type="number" id="income" placeholder="Enter your pocket money">
+      </div>
+      <div class="input-group">
+        <label>Savings Goal: </label>
+        <input type="number" id="savingsGoal" placeholder="Enter your savings goal">
+      </div>
+      <div class="input-group">
+        <label>Expenses: </label>
+        <input type="number" id="expenses" placeholder="Enter your expenses">
+      </div>
+      <button class="btn" id="calculateBtn">Calculate</button>
+      <p id="budgetResult"></p>
+    </div>
+
+    <!-- Personalized Learning Path -->
+    <div class="container">
+      <h2>Personalised Learning Path</h2>
+      <button class="btn" id="personalizedLearningBtn">Generate Learning Path</button>
+      <p id="learningPath"></p>
+    </div>
+
+    <!-- Learning Review & Summary -->
+    <div class="container">
+      <h2>Learning Review & Summary</h2>
+      <button class="btn" id="generateReportBtn">Generate Learning Report</button>
+      <div id="report">
+        <h3>Learning Report</h3>
+        <p id="summary"></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // AR Simulation
+    const arBtn = document.getElementById('arBtn');
+    const arFeedback = document.getElementById('arFeedback');
+    const piggyBankModel = document.getElementById('piggyBankModel');
+    let savings = 0;
+
+    // Start AR when the button is clicked
+    arBtn.addEventListener('click', function() {
+      document.getElementById('arScene').style.display = 'block';
+      arFeedback.textContent = "Point the camera at the Hiro marker to see the piggy bank!";
+    });
+
+    // Interaction with the piggy bank model
+    piggyBankModel.addEventListener('click', function() {
+      savings += 1; // Simulate saving $1 every time the piggy bank is clicked
+      arFeedback.textContent = `You have saved $${savings}!`;
+    });
+
+    // AI Assistant (simple response simulation)
+    const aiResponse = document.getElementById('aiResponse');
+    const askAiBtn = document.getElementById('askAiBtn');
+    const askTextAiBtn = document.getElementById('askTextAiBtn');
+    const questionInput = document.getElementById('questionInput');
+    const responses = [
+      "You should save at least 20% of your pocket money!",
+      "It’s important to spend wisely, but also have some fun!",
+      "Investing in the future is key to growing your savings!",
+      "Saving for something big takes patience, keep going!"
+    ];
+    
+    askAiBtn.addEventListener('click', function() {
+      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+      aiResponse.textContent = randomResponse;
+    });
+
+    askTextAiBtn.addEventListener('click', function() {
+      const question = questionInput.value;
+      if (question) {
+        const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+        aiResponse.textContent = `Question: "${question}" - AI Answer: ${randomResponse}`;
+      }
+    });
+
+    // Budget Calculator
+    const calculateBtn = document.getElementById('calculateBtn');
+    const budgetResult = document.getElementById('budgetResult');
+    calculateBtn.addEventListener('click', function() {
+      const income = parseFloat(document.getElementById('income').value);
+      const savingsGoal = parseFloat(document.getElementById('savingsGoal').value);
+      const expenses = parseFloat(document.getElementById('expenses').value);
+
+      if (isNaN(income) || isNaN(savingsGoal) || isNaN(expenses)) {
+        budgetResult.textContent = 'Please enter valid numbers for all fields.';
+      } else {
+        const leftover = income - expenses;
+        if (leftover >= savingsGoal) {
+          budgetResult.textContent = `Great! You can save ${savingsGoal} and still have ${leftover - savingsGoal} left.`;
+        } else {
+          budgetResult.textContent = `You need to save more or reduce your expenses by ${savingsGoal - leftover}.`;
+        }
+      }
+    });
+
+    // Personalised Learning Path
+    const personalizedLearningBtn = document.getElementById('personalizedLearningBtn');
+    const learningPath = document.getElementById('learningPath');
+    personalizedLearningBtn.addEventListener('click', function() {
+      learningPath.textContent = 'Your personalised learning path: Start with saving basics, then learn budgeting, followed by investment basics!';
+    });
+
+    // Learning Review & Summary
+    const generateReportBtn = document.getElementById('generateReportBtn');
+    const report = document.getElementById('report');
+    const summary = document.getElementById('summary');
+    generateReportBtn.addEventListener('click', function() {
+      summary.textContent = 'You have completed your session! You learned about saving, budgeting, and investing basics. Keep practicing to improve!';
+      report.style.display = 'block';
+    });
+
+    // Daily Tip (Randomized)
+    const tips = [
+      "Always save a little from your pocket money to buy something special in the future!",
+      "Set small savings goals to motivate yourself!",
+      "Try to save at least 10% of any money you receive!",
+      "Discuss your saving goals with your parents to get support!"
+    ];
+    const randomTip = tips[Math.floor(Math.random() * tips.length)];
+    document.getElementById('dailyTip').textContent = randomTip;
+  </script>
+</body>
+</html>
